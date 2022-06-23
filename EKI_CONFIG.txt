@@ -1,0 +1,367 @@
+
+
+ubuntu 20.04 LTS
+install ssh
+install java (WAJIB JAVA 11)
+
+=========================== JENKINS MANUAL INSTALL =========================== 
+
+javac --version
+apt-get update
+apt-get install openjdk-11-jdk-haeadless or apt-get install default-jdk   (java 11 di ubuntu 20.04 LTS)
+java --version
+
+https://github.com/EKI-INDRADI/eki-latihan-multi-java-ubuntu-server-1804-lts
+
+
+video 25:30
+https://www.jenkins.io/download/ (yg generic)
+
+https://get.jenkins.io/war-stable/2.332.3/jenkins.war
+
+
+mkdir -p /home/JENKINS_DATA &&
+cd /home/JENKINS_DATA  && 
+wget https://get.jenkins.io/war-stable/2.332.3/jenkins.war
+
+java -jar jenkins.war --httpPort=7000 &  (defaultnya 8080)
+java -jar jenkins.war --httpPort=7000 &  <<<< ( & = view log )
+java -jar jenkins.war --httpPort=7000    <<<< ( & = tanpa view log )
+java -jar jenkins.war --httpPort=7000 & 
+
+java -jar jenkins.war --httpListenAddress=0.0.0.0 --httpPort=7000 & 
+
+reference : https://www.jenkins.io/doc/book/installing/initial-settings/
+
+
+
+
+
+------------- KILL PORT
+sudo lsof -i :7000
+kill -9 9052
+------------- KILL PORT
+
+
+untuk buka password
+
+nano /root/.jenkins/secrets/initialAdminPassword atau
+
+cat /root/.jenkins/secrets/initialAdminPassword
+
+=========================== JENKINS MANUAL INSTALL =========================== 
+
+------------------------- DOCKER - DEPRECATED IMAGE
+https://hub.docker.com/_/jenkins (deprecated)
+
+
+docker container stop jenkins_2.60.3_7000 &&
+docker container rm jenkins_2.60.3_7000 &&
+docker network rm jenkins_network &&
+rm -rf /home/DOCKER_DATA/JENKINS/jenkins_home
+
+
+
+mkdir -p /home/DOCKER_DATA/JENKINS/jenkins_home &&
+chmod 777 -Rv /home/DOCKER_DATA/JENKINS/jenkins_home &&
+docker pull jenkins:2.60.3-alpine && 
+docker network create jenkins_network && 
+docker network ls  && 
+docker network inspect jenkins_network && 
+docker container create --name jenkins_2.60.3_7000 \
+--restart always \
+--network jenkins_network \
+-v /home/DOCKER_DATA/JENKINS/jenkins_home:/var/jenkins_home \
+-p 7000:8080 \
+-p 50000:50000 \
+jenkins:2.60.3-alpine  &&
+docker container start jenkins_2.60.3_7000 && 
+docker container inspect jenkins_2.60.3_7000 && 
+cat  /home/DOCKER_DATA/JENKINS/jenkins_home/secrets/initialAdminPassword
+
+
+
+
+------------------------- /DOCKER - DEPRECATED IMAGE
+
+------------------------- DOCKER - LATEST IMAGE
+
+https://hub.docker.com/r/jenkins/jenkins (latest)
+
+
+docker container stop jenkins_2.355_7000 &&
+docker container rm jenkins_2.355_7000 &&
+docker network rm jenkins_network &&
+rm -rf /home/DOCKER_DATA/JENKINS/jenkins_home
+
+mkdir -p /home/DOCKER_DATA/JENKINS/jenkins_home &&
+chmod 777 -Rv /home/DOCKER_DATA/JENKINS/jenkins_home &&
+docker pull jenkins/jenkins:2.355-jdk11 && 
+docker network create jenkins_network && 
+docker network ls  && 
+docker network inspect jenkins_network && 
+docker container create --name jenkins_2.355_7000 \
+--restart=on-failure \
+--network jenkins_network \
+-v /home/DOCKER_DATA/JENKINS/jenkins_home:/var/jenkins_home \
+-p 7000:8080 \
+-p 50000:50000 \
+jenkins/jenkins:2.355-jdk11  &&
+docker container start jenkins_2.355_7000 && 
+docker container inspect jenkins_2.355_7000 && 
+cat  /home/DOCKER_DATA/JENKINS/jenkins_home/secrets/initialAdminPassword
+
+------------------------- /DOCKER - LATEST IMAGE
+
+
+
+docker network connect jenkins_network jenkins_2.60.3_7000
+
+docker network connect jenkins jenkins_2.60.3_8080
+ 
+docker container start jenkins_2.60.3_8080 
+
+docker exec -it jenkins_2.60.3_8080 /bin/sh
+docker exec -u 0 -it jenkins_2.60.3_8080 /bin/sh  (root user)
+docker exec -it jenkins_2.46.3_8080 /bin/sh
+
+
+nano /var/jenkins_home/secrets/initialAdminPassword  (dir jenkins)
+
+nano /home/DOCKER_DATA/JENKINS/jenkins_home/secrets/initialAdminPassword (docker volume jenkins)
+45fb8155f9cc413d949aa6b2521f30f6
+
+cat  /home/DOCKER_DATA/JENKINS/jenkins_home/secrets/initialAdminPassword 
+
+--------------------programmer zaman now
+
+reference : 
+https://docs.google.com/presentation/d/1JhqKkc7L9NOxSxnYHKlOHaPt7isbKcLfO-IU4QscEGk/edit
+https://www.youtube.com/watch?v=qKI7Y2sUjbU&list=PL-CtdCApEFH_nxerGqyG2ai1tZ4hUgQWg
+
+
+
+
+setelah isi password
+unchecklist seluruh plugin (none)
+1. create account
+
+admin : crypt
+masuk123
+masuk123
+CRYPT
+
+
+2. 00:31:14 - Jenkins Data
+
+tidak butuh database semua config di simpan pada folder .jenkins (atauo jenkins_home pada docker)
+
+jika folder .jenkins / jenkins_home di hapus maka sama aja instal ulang
+
+cd /root/.jenkins
+pwd
+
+
+2.00:33:52 - Membuat Job
+
+task / job 
+
+new item (untuk membuat job) -> freestyle object
+
+
+description = dari job nya
+
+
+3. new item -> build new = jalankan job
+- ketika memilih build now , build history akan auto geneerate build 1 build 2 dst ..
+- klik salah 1 tag -> changes
+-  klik salah 1 tag ->  console output   (/var/jenkins_home/workspace/belajar jenkins)
+
+4. new item -> configure = edit job
+
+5. new item -> delete object 
+
+
+
+
+6 back -> dashboard 
+akan muncul list job nya
+
+
+7. 00:39:14 - Menginstall Git Plugin
+dashboard -> manage jenkins -> plugin manager -> installed
+dashboard -> manage jenkins -> plugin manager -> availble -> Check now -> git
+
+------------- MANUAL INSTAL
+Signature verification failed in update site 'default'  ( error java)
+manual install plugin /jenkins_home/plugins/
+https://plugins.jenkins.io/  -> git
+https://plugins.jenkins.io/git/#releases
+------------- MANUAL INSTAL
+
+download now and install after restart -> Installing Plugins/Upgrades
+
+
+
+centang Restart Jenkins when installation is complete and no jobs are running
+
+
+
+8. 00:39:14 - Menginstall Git Plugin -  install ssh github plugin jenkins (install ssh public ke github)
+
+ls ~/.ssh
+#cat ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub
+
+-----------------
+kalo ga asa id_rsa , dll
+ssh-keygen -o
+enter
+enter
+----------------
+
+cat ~/.ssh/id_rsa.pub
+<value rsa pub>
+
+login github di web -> setting -> SSH and GPG Keys
+RSA_PUB_VM_JENKINS
+<paste rsa pub> 
+
+
+dashboard -> manage jenkins -> plugin manager -> installed
+
+
+
+9. 00:44:52 - Credentials
+- untuk menginstal ssh akese / auto generate ssh akses
+
+cat ~/.ssh/id_rsa
+
+copy dari :
+-----BEGIN OPENSSH PRIVATE KEY-----
+
+sampe :
+-----END OPENSSH PRIVATE KEY-----
+
+
+
+dashboard -> manage jenkins -> manage credential
+
+P	            Store       Domains
+jenkins logo     	Jenkins	(global)
+
+
+pilih yg global  -> add credentials -> SSH username with privaate key -> Scrope "global(jenkins, nodes, items, all child item, etc)"
+
+ID : EKI-TESTING-GITHUB
+description : GITHUB EKI
+Username : EKI-INDRADI   (username GITHUB asli)
+
+Passphrase :   ( ini ketika generate ssh key) , kalo seblumnya enter2 doaang brati kosong
+
+
+
+
+10.   00:49:38 - Integrasi dengan Git  (cuma clone)
+
+https://github.com/EKI-INDRADI/eki-latihan-jenkins-deploy-belajar-spring-dasar
+
+dashboard -> belajar jenkins -> configure ->
+
+
+source Code Management : Git 
+repositories url :  git@github.com:EKI-INDRADI/eki-latihan-jenkins-deploy-belajar-spring-dasar.git    (pake yg SSH)
+credential : EKI-TESTING-GITHUB (default none)
+branch : main    (defaultnya : */master)
+
+
+-> save
+
+
+dashboard -> belajar jenkins -> build Now
+
+akan muncul di build history
+lalu kelik yang paling atas -> status
+
+lalu kelik yang paling atas -> console output
+
+
+
+
+untuk melihat source code program yang di deploy
+
+dashboard -> belajar jenkins -> workspace
+
+
+
+11. 00:53:45 - Build Step
+
+
+------------- success
+dashboard -> belajar jenkins -> configure -> tab  Source Code Management 
+-> Build (add Build step)  : Execute shell (linux only, kalo windows execute windows batch command) ->  command nya  : ./mvnw clean       (.mvnw itu untuk build project java apache maven)
+tambahkan lagi 
+-> Build (add Build step)  : Execute shell ->  command nya  : ./mvnw compile test-compile
+tambahkan lagi 
+-> Build (add Build step)  : Execute shell ->  command nya  : ./mvnw test
+
+
+-> SAVE
+
+dashboard -> belajar jenkins -> Build Now -> history build -> status
+dashboard -> belajar jenkins -> Build Now -> history build -> console output
+
+tunggu sampe selesai
+
+------------- success
+
+------------- gagal
+
+tambahkan 1 build step yang salah lalu drag ke urutan 2
+
+dashboard -> belajar jenkins -> configure -> tab  Source Code Management
+ 
+-> Build (add Build step)  : Execute shell > command : ./mvnw salah 
+
+urutan jadi : 
+
+
+-> Build (add Build step)  : Execute shell > command : ./mvnw clean  
+-> Build (add Build step)  : Execute shell > command : ./mvnw salah 
+-> Build (add Build step)  : Execute shell > command : ./mvnw compile test-compile
+-> Build (add Build step)  : Execute shell > command : ./mvnw test
+
+
+
+
+perbedaan success  atau gagal pada build history
+
+
+gagal merah silang x pada build history
+success hijau ceklis pada build history
+
+
+klik build history -> #5 (urutan terakhir) -> console output terdapat console Finished: FAILURE
+
+
+
+
+
+
+
+lalu hapus
+dashboard -> belajar jenkins -> configure -> tab  Source Code Management -> Build (add Build step)  : Execute shell > command : ./mvnw salah  (delete pake silang x)
+
+
+lalu dashboard -> belajar jenkins -> Build Now   kembali
+
+------------- gagal
+
+
+
+12. 01:00:29 - Build History
+
+--------------------programmer zaman now
+
+
+
