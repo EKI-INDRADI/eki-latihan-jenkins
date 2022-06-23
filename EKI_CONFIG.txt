@@ -361,6 +361,122 @@ lalu dashboard -> belajar jenkins -> Build Now   kembali
 
 12. 01:00:29 - Build History
 
+dashboard -> belajar jenkins -> Build History - > trend (untuk liad grafik/timeline build jenkins, kelebihan bisa liad seluruh jenkins build history,
+ jika pada build history biasa yang di tampilkan hanya sebagian/sedikit tidak secara keseluruhan)
+
+
+dashboard -> belajar jenkins -> Build Now -> history build -> console output -> full log   (untuk melihat detail history)
+
+
+
+13. 01:03:52 - Post Build Action  (apa yang akan di lakukan jika proses build selesai misal kirim email , kirim ke slack , dll)
+
+download & registrasi account slack
+
+
+bikin workspace baru di EKI_TESTING
+
+
+dashboard -> manage jenkins -> plugin manager -> Available -> Slack Notification -> download install and  restart
+
+
+-----Jika Error 403 no valid crumb was include in the request , saat install Slack Notification --------------
+manage Jenkins -> Configure Global Security -> CSRF Protection -> Enable proxy compatibility (checklist) -> Save
+-------------------
+
+
+
+
+
+harus install slack jenkins integration
+
+login slack ke browser
+trs buka
+https://my.slack.com/services/new/jenkins-ci or https://ekitesting.slack.com/apps/new/A0F7VRFKN-jenkins-ci
+
+
+makesure channel nya sudah sesuai, atau create channel baru #testing-jenkins-notification (TESTING JENKINS NOTIFICATION) -> skip email ->  #testing-jenkins-notification  -> add Jenkins CI Integration
+
+untuk dapat secretkey 
+https://ekitesting.slack.com/services/B03LTPJ3UPL?added=1  (setelah add)
+
+
+chat di message channell :
+added an integration to this channel: jenkins
+
+
+Team Subdomain: ekitesting
+Integration Token Credential ID: Create a secret text credential using LBdOsf0UuUuQd7obATOeHw1K as the value
+
+
+
+
+dashboard -> Manage Jenkins -> Manage Credetials -> Stores scoped to Jenkins , Domains(global) ->  Global credentials (unrestricted) , Add Credentials
+Kind : Secret text
+Scope : GLobal (Jenkins,nodes,item,all child items,etc(
+Secret : LBdOsf0UuUuQd7obATOeHw1K
+Id : slack-token-testing-jenkins-notification
+Description : slack-token-testing-jenkins-notification     (BIKIN DESCRIPTION KALO BISA JANGAN KEPANJANGAN / BANYAK SPASI SUKA ERROR)
+-> Save
+
+
+Dashboard -> Configuration -> Manage Jenkins -> Configure System -> Slack
+Workspace : ekitesting  ( bukan EKI_TESTING pake huruf kecil yang di pake di domain https://ekitesting.slack.com)
+Credential : slack-token-testing-jenkins-notification
+Default channel / member_id : testing-jenkins-notification
+
+
+-> test connection -> Save
+
+----------------- JIKA ERROR saat test connection
+Client error : Illegal character in query at index 85: https://ekitesting.slack.com/services/hooks/jenkins-ci?token=LBdOsf0UuUuQd7obATOeHw1K  
+
+(pastikan description tidak alay, dan token benar))
+----------------- JIKA ERROR saat test connection
+
+
+setelah berhasil test di slack app di workspace "EKI_TESTING",  channel "testing-jenkins-notification" akan muncul
+
+jenkins
+APP  10:43 AM
+Slack/Jenkins plugin: you're all set on http://192.168.100.55:7000/
+
+
+
+
+
+Dashboard -> belajar Jenkins -> Configure -> Add post-build action -> slack Notification -> centang all / centang seperlunya , lebih lengkapnya bisa advanced   -> Save
+
+
+
+
+
+
+Dashboard -> belajar Jenkins -> Build Now 
+
+akan muncul notifikasi di slack app
+
+jenkins
+APP  10:50 AM
+Belajar Jenkins - #7 Started by user CRYPT (Open)
+New
+10:50
+Belajar Jenkins - #7 Success after 28 sec (Open)
+
+
+
+14. 01:13:56 - Copy Job
+
+
+
+
+
+
+
+
+
+
+
 --------------------programmer zaman now
 
 
