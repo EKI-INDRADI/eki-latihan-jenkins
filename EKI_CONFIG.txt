@@ -759,11 +759,23 @@ e Dan lain-lain https:/plugins.jenkins.io/ui/search/?labels=user
 tigerr remotely -> tanpa harus buka web jenkins  (tapi perlu token)
 
 
+Dashboard - New Item ->  enter an item name : "Belajar Build Remote"  -> Copy from "Belajar Jenkins" -> Ok ( hapus , discard old buildnya dulu)
+-> Build Trigger -> trigger builds remotely -> Authentication Token -> EKITESTING123
 
-Build Trigger -> trigger builds remotely -> Authentication Token -> EKITESTING123
+
+cara trigger (ada di configurasi saat config trigger builds remotely -> Authentication Token)
+-------------------------
+Dashboard -> "Belajar Build Remote" -> Configure
+
+Use the following URL to trigger build remotely: JENKINS_URL/job/Belajar%20Build%20Remote/build?token=TOKEN_NAME or /buildWithParameters?token=TOKEN_NAME
+Optionally append &cause=Cause+Text to provide text that will be included in the recorded build cause.
+-------------------------
+http://192.168.100.55:7000/job/Belajar%20Build%20Remote/build?token=EKITESTING123   (enter di browser)
 
 
-
+curl http://192.168.100.55:7000/job/Belajar%20Build%20Remote/build?token=EKITESTING123 
+curl http://192.168.100.55:7000/job/Belajar%20Build%20Remote/build?token=EKITESTING123 
+curl http://192.168.100.55:7000/job/Belajar%20Build%20Remote/build?token=EKITESTING123 
 
 
 
