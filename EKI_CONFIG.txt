@@ -465,16 +465,131 @@ Belajar Jenkins - #7 Success after 28 sec (Open)
 
 
 
-14. 01:13:56 - Copy Job
+14. 01:13:56 - Copy Job 
+
+Dashboard - New Item ->  enter an item name : "Belajar Copy Job"  -> Copy from "Belajar Jenkins" -> Ok (semuanya di copy) -> Save -> Build Now
+
+
+
+15. 01:16:19 - Scheduled Job (Kondisi selalu di Execute berdasarkan cron espression baik ada perubahan ataupun tidak)
+
+Build Periodically == expression cron    https://crontab.guru/
+
+Dashboard - New Item ->  enter an item name : "Belajar Scheduled Job"  -> Copy from "Belajar Jenkins" -> Ok (semuanya di copy) -> Build Tigger -> 
+Build preiodically = * * * * * ->  Save
+
+
+
+https://crontab.guru/#0_2_*_*_*
+
+* * * * * = At every minute
+0 2 * * * = At 02:00.
+
+
+hasilnya pada apps slack : 
+
+
+jenkins
+APP  11:14 AM
+Belajar Scheduled Job - #1 Started by timer (Open)
+11:14
+Belajar Scheduled Job - #1 Success after 27 sec (Open)
+New
+11:15
+Belajar Scheduled Job - #2 Started by timer (Open)
+11:15
+Belajar Scheduled Job - #2 Success after 26 sec (Open)
+11:16
+Belajar Scheduled Job - #3 Started by timer (Open)
+11:16
+Belajar Scheduled Job - #3 Success after 28 sec (Open)
+
+
+
+Dashboard -  Belajar Scheduled Job -> Build Tigger ->  Build preiodically = 0 2 * * * ->  Save   ( biar gak tiap menit)
+
+
+16. 01:20:49 - Poll SCM  ( kondisi cron Hanya Jika ada perubahan baru  code program di build ) SCM = Source Code Management
+
+Dashboard - New Item ->  enter an item name : "Belajar Poll SCM"  -> Copy from "Belajar Jenkins" -> Ok (semuanya di copy) -> Build Tigger -> 
+Build preiodically = * * * * * ->  Save
+
+
+hasilnya pada apps slack : 
+
+jenkins
+APP  11:28 AM
+Belajar Poll SCM - #1 Unknown after 3.8 sec and counting (Open)
+11:28
+Belajar Poll SCM - #1 Success after 26 sec (Open)
+
+
+COMMIT / edit file di github https://github.com/EKI-INDRADI/eki-latihan-jenkins-deploy-belajar-spring-dasar
+nanti akan berubah
+
+
+Belajar Poll SCM - #2 Started by changes from noreply (2 file(s) changed) (Open)
+New
+11:31
+Belajar Poll SCM - #2 Success after 26 sec (Open)
 
 
 
 
 
+*/5 * * * *  = At every 5th minute. (tiap 5 menit sekali)
+
+
+17. 01:26:43 - Disabled Job
+
+
+disable job = semua konfigurasi tetap ada tetapi job tidak hilang
+
+
+Dashboard - Belajar Scheduled Job ->  Configure -> General , Disable this project (checklist) ->  Save 
+
+pada Dashboard - Belajar Scheduled Job    Build Now akan hilang
 
 
 
+18. 01:29:16 - Jenkins Environment Variable  (keperluan untuk logging console output)
 
+
+List ENV JENKINS :
+http://192.168.100.55:7000/env-vars.html/
+
+
+Execute shell Command :
+echo "Execute Job ${JOB_NAME}:${BUILD_NUMBER}" ;
+
+
+Dashboard - New Item ->  enter an item name : "Belajar Env Variable"  -> Copy from "Belajar Jenkins" -> Ok (semuanya di copy)  
+-> Build (add build step) : Execute Shell  (rubah ke paling atas) -> echo "Execute Job ${JOB_NAME}:${BUILD_NUMBER}"   (ini pake linux command) -> Save
+
+
+
+Dashboard -> Belajar Env Variable -> Build History #1 -> Console Output -> akan ada kata2 "Execute Job Belajar Env Variable:1"
+
+
+19. 01:33:47 - Global Environment Variable (keperluan untuk logging console output, tapi pake variable global yang udah di set)
+
+
+Dashboard -> Manage Jenkins -> Configure System -> GLobal Properties , Environment variable (checklist) 
+-> add , Name : "DEPLOY_AUTHOR" , Value : "EKI TESTING"
+
+Dashboard ->  "Belajar Env Variable"  -> Configure ->
+-> Build (add build step) : Execute Shell  (EDIT ONLY) -> 
+echo "============================= Execute Job ${JOB_NAME}:${BUILD_NUMBER} =============================";
+echo "============================= Build by ${DEPLOY_AUTHOR} ============================= ";
+-> Save
+
+
+Dashboard -> Belajar Env Variable -> Build History #2 -> Console Output -> 
+
++ echo ============================= Execute Job Belajar Env Variable:2 =============================
+============================= Execute Job Belajar Env Variable:2 =============================
++ echo ============================= Build by EKI TESTING ============================= 
+============================= Build by EKI TESTING ============================= 
 
 
 --------------------programmer zaman now
