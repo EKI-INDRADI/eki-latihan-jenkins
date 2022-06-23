@@ -591,6 +591,188 @@ Dashboard -> Belajar Env Variable -> Build History #2 -> Console Output ->
 + echo ============================= Build by EKI TESTING ============================= 
 ============================= Build by EKI TESTING ============================= 
 
+20. 01:37:13 - Build Parameter
+
+kadang ada kasus dmn kita ingin meminta input data (string,boolean,seceret,dll) dari user sebelum menjalankan job tersebut
+
+this project is parameterized, Name : SCRIPT,
+
+
+Dashboard - New Item ->  enter an item name : "Belajar Build Parameter"  -> Copy from "Belajar Jenkins" -> Ok (semuanya di copy)
+-> tab General, this project is parameterized -> add parameter -> Choice Parameter
+
+------------ NOTE
+Choice Parameter =  milih kasi opsi
+boolean = true/false
+credential = pilih credential
+file = pilih file,
+multi line string = jika stringnya lebih dari 1 baris
+password = password
+run = run
+string = input string
+------------ NOTE
+
+
+
+Name  :  Script
+clean<center biar kebawah ,dst>
+compile
+test
+packages
+
+
+
+
+hapus semua execute shell
+
+tambahkan 1 saja execute shell
+./mvnw ${SCRIPT}
+
+
+->Save
+
+
+Dashboard -> Belajar Build Parameter -> Build with parameters (penggatinya Build Now, akan muncul combo box SCRIPT)
+
+check :
+
+Dashboard ->  Belajar Build Parametere -> Build History #<BUILD_NUMBER> -> Console Output -> (akan di eksecute berdasarkan script)
+
+
+21. 01:42:45 - Discard Old Build
+
+jenkins menyimpan semua history build (ini gak baik, server akan penuh storagenya)
+
+discard old build = untuk menghapus history build secara otomatis, menggunakan hari atau jumlah buildnya yg ingin di simpan
+
+Dashboard -> Belajar Jenkins -> Configure -> Discard old builds -> Log Rotation -> 
+
+Days to keep builds  : 1
+Max # of build to keep : 1
+
+-> Save
+
+
+Dashboard -> Belajar Jenkins -> Build Now  (setelah selesai build akan hapus historynya dan hanya sisa yang terakhir ydi build)
+
+21. 01:46:26 - Build Executor  (PARALEL BUILD, mirip child process nodejs)
+
+secara default build executornya 2
+
+artinya untuk build project lain haruus menunggu build dari project 2 yang di kerjakan terlebih dahulu ( ngantri  mirip await nodejs)
+
+
+dashboard -> manage jenkins -> configure system ->  # of executors : 1 (sesuaikan thread processor) -> Save
+
+setelah di save bisa di lihat di dashboard "Build Executor Status"
+hanya akan ada 1
+
+
+
+bisa di tambahkan sesuai keinginan harap bijak dan sesuaikan dengan hardware server
+
+
+dashboard -> manage jenkins -> configure system ->  # of executors : 4 -> Save   (recomend untuk processor 4 core / 4 threads dan ram 4GB)
+
+
+22. 01:50:40 - User Management
+
+
+create user :
+
+dashboard -> manage jenkins -> manage user -> create user
+
+ekitesting
+masuk123
+eki testing
+ekitesting@mail.com
+
+Logout Login lagi pake user baru
+
+
+
+anodymous read only (recomended jika project berupa open source, hanya bisa liad job , dll bukan konfigurasi) :
+Dashboard -> Manage Jenkins -> Configure Global Security -> Authorization -> Logged-in users can do anything -> Allow Anonymous Read Access -> Save
+
+Logout
+
+
+----------- PLUGIN ROLE BASE AUTHORIZATION STRATEGY ----------- 
+(bikin user di jenkins sama aja bikin user administrator bs digunakan apapun) , nah di jenkins kalo mw role spesific untuk usernya perlu install plugin
+
+Role-Based Authorization Strategy
+
+Dashboard -> Manage jenkins -> manage plugin -> available -> Role-Based Authorization Strategy -> Download install n restart
+
+Dashboard -> Manage Jenkins -> Configure Global Security -> Authorization -> Role-Based Strategy -> Save
+
+
+
+Manage Roles =  untuk manage roles nya
+
+Dashboard -> Manage Jenkins -> Manage and assign Roles -> Manage Roles -> Role to add  :
+user_role (overall:read, all job , all run , all view , scm)
+guest_role (overall:read, job : discover , read dan workspace      view : read)
+-> Save
+
+
+Assign Roles =  memberikan hak akses kepada
+
+Dashboard -> Manage Jenkins -> Manage and assign Roles -> Assign Roles -> 
+CRYPT : admin
+Anonymous : guest_role
+-> Save
+
+
+
+dashboard -> manage jenkins -> manage user -> create user
+ekirole
+masuk123
+eki role
+ekiroleg@mail.com
+-> Save
+
+
+Dashboard -> Manage Jenkins -> Manage and assign Roles -> Assign Roles -> User/group to add -> ekirole (set to user_role) -> add -> Save
+
+
+Dashboard -> Manage Jenkins -> Manage and assign Roles -> Assign Roles -> User/group to add -> ekitesting (set to user_role) -> add -> Save
+
+
+
+login pake ekirole / ekitesting 
+tidak akan ada menu Manage Jenkins
+
+
+
+User Management Lainnya
+e https://plugins.jenkins.io/saml/  (WINDWOS LDAP / LINUX LDAP, dll)
+e https://plugins.jenkins.io/google-login/
+e https://plugins.jenkins.io/github-oauth/
+e https://plugins.jenkins.io/gitlab-oauth/
+e Dan lain-lain https:/plugins.jenkins.io/ui/search/?labels=user
+
+
+
+23. 02:02:02 - Trigger Build Remotely
+
+tigerr remotely -> tanpa harus buka web jenkins  (tapi perlu token)
+
+
+
+Build Trigger -> trigger builds remotely -> Authentication Token -> EKITESTING123
+
+
+
+
+
+
+----------- PLUGIN ROLE BASE AUTHORIZATION STRATEGY ----------- 
+
+
+
+
+
 
 --------------------programmer zaman now
 
