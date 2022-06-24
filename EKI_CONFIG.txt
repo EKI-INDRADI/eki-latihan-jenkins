@@ -1,8 +1,20 @@
+Requirement :
+
+- Ubuntu Server 20.04 LTS
+- Virtual box ( Network Bridge, Name : U_2004LTS , 1 Core , 1024mb)  192.168.100.55
+- Docker (For Docker)
+- install ssh
+- install java (WAJIB JAVA 11)   (For Manual Install)
 
 
-ubuntu 20.04 LTS
-install ssh
-install java (WAJIB JAVA 11)
+ssh crypt@192.168.100.55 -p 22
+
+
+apt-get update
+apt-get install openssh-server
+javac --version
+apt-get install openjdk-11-jdk-haeadless
+apt-get install ssh
 
 =========================== JENKINS MANUAL INSTALL =========================== 
 
@@ -751,7 +763,7 @@ e https://plugins.jenkins.io/google-login/
 e https://plugins.jenkins.io/github-oauth/
 e https://plugins.jenkins.io/gitlab-oauth/
 e Dan lain-lain https:/plugins.jenkins.io/ui/search/?labels=user
-
+----------- PLUGIN ROLE BASE AUTHORIZATION STRATEGY ----------- 
 
 
 23. 02:02:02 - Trigger Build Remotely
@@ -778,8 +790,104 @@ curl http://192.168.100.55:7000/job/Belajar%20Build%20Remote/build?token=EKITEST
 curl http://192.168.100.55:7000/job/Belajar%20Build%20Remote/build?token=EKITESTING123 
 
 
+24. 02:06:13 - View
 
------------ PLUGIN ROLE BASE AUTHORIZATION STRATEGY ----------- 
+cara buat view -> di dashboard di atas view job ( ada tombol + )
+
+Name : Group View
+
+Type view -List VIew = job mana yang ingin di tambahkan
+type VIew - My View = semua yang bs saaya akses saya tampilkan di situ
+
+Type : List View
+
+
+tambahkan job yg diinginkan
+sesuaikan columns nya
+
+-> OK
+
+
+25. 02:09:02 - Nodes
+
+agar gak perlu install jenkins di setiap vm, jadi tinggal  install agent/node ke beberapa VM
+
+
+Jenkins Ip (master) : 192.168.100.55:7000
+
+-------------------- BIKIN VM BARU / CLONE VM YG SUDAH ADA ----------------
+Buat VM Baru requirement
+- Java 11
+- Git
+- ssh
+
+ssh crypt@192.168.100.56 -p 22
+
+apt-get update
+apt-get install openssh-server
+javac --version
+apt-get install openjdk-11-jdk-haeadless
+apt-get install ssh
+
+
+pwd (check home directory)
+
+
+Virtual Box Name : U_2004LTS_JENKINS_AGENT (Ubuntu Server 20.04 LTS, Network Bridge,  1 Core , 1024mb)  192.168.100.56
+Jenkins Agent : 
+
+
+SSH Build Agent
+- saat menambahkan Node , Terdapat bnyk pilihan dari node master ke node agent
+- salah satu yang aman adalah menggunakan ssh , namun secara default pluginnya tidak terinstall
+- install pl;ugin SSH Build Agent
+
+Dashboard -> Manage jenkins -> manage plugin -> available -> Role-Based Authorization Strategy -> SSH Build Agents -> install download restart
+
+
+Dashboard -> Manage Jenkins -> Manage node and clouds -> New Node ->  Node name : Jenkins Agent 1 , type Permanent Agent ->
+
+Number of executors : 2
+remote root directory : /home/jenkins-agent1
+label : ekitesting-agent-1
+usage : Use this node as much as possible (agar ga pilih2 job yg mana, INI AKAN SEMUA JOB DI DEPLOY DI VM , mending pilih yg 1 nya)
+Launch Method : Launch agent via SSH
+Host : 192.168.100.56   (jika penggunakan docker ga bs akses ke local ip address, di sarankan ip public)
+
+Credentials :  none -> Add -> Kind : SSH username with password, Scope : Global (jenkins,nodes,item,..etc) , 
+Username : crypt, password : masuk123 , ID : jenkins-agent1, Description : Jenkins Agent 1
+
+crypt/****** (Jenkins Agent 1)
+
+Host Key Verification Strategy : Non verifying Verification Strategy
+
+-> Save
+
+
+
+----------- ISSUE untuk docker jika nembak local NETWORK
+
+Next 2:19:28  (jika penggunakan docker ga bs akses ke local ip address, di sarankan ip public)
+- docker network access local network
+- https://forums.docker.com/t/how-to-access-docker-container-from-another-machine-on-local-network/4737/16
+
+
+----------- ISSUE untuk docker jika nembaklocal NETWORK
+
+
+
+
+
+Dashboard -> Manage Jenkins -> Manage node and clouds -> log ->  (akan cek versi java , login,dll)
+
+
+
+saat build now secara keseluruhan akan  di deploy di master dan di agent nya
+
+
+-------------------- BIKIN VM BARU / CLONE VM YG SUDAH ADA ----------------
+
+
 
 
 
