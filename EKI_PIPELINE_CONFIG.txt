@@ -1,0 +1,295 @@
+
+
+0. ===================== CREATE GIT REPO
+
+example : https://github.com/EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline/blob/master/Jenkinsfile
+
+Jenkinsfile :
+
+
+def configDate ="27/06/2022"
+
+
+pipeline {
+  agent any
+  stages {
+
+
+        stage("Build WHOAMI") {
+          steps {
+            echo "whoami . . . Date : ${configDate}"
+            sh """
+            whoami
+            """
+          }
+      }
+    
+    stage("Build PWD") {
+          steps {
+            echo "pwd . . . Date : ${configDate}"
+            sh """
+            pwd
+            """
+          }
+    }
+
+  }
+
+
+}
+
+
+0. =====================  CREATE GIT REPO
+
+
+1. ===================== JENKINS CONFIG (INSTALL PLUGIN)
+
+Dashboard -> Manage jenkins -> manage plugin -> available -> SSH Build Agents -> install download restart
+dashboard -> manage jenkins -> manage plugin -> available -> pipeline -> download install restart
+
+/1. ===================== JENKINS CONFIG (INSTALL PLUGIN)
+
+
+2. ===================== TARGET VM DEPLOY
+
+apt-get update
+
+-------------- optional
+	javac --version
+	apt-get install openjdk-11-jdk-haeadless
+-------------- optional
+
+apt-get install default-jdk   (ubuntu 20.04 LTS auto pake java 11)
+apt-get install git
+
+mkdir /home/jenkins-deploy
+chmod 777 -Rv /home/jenkins-deploy
+
+/2. ===================== TARGET VM DEPLOY
+
+3. ===================== JENKINS CONFIG (NORMAL VPS)
+------------
+if id_rsa or id_rsa.pub is not found
+
+ssh-keygen -o
+enter
+enter
+------------
+# cat ~/.ssh/id_rsa.pub   (PUBLIC KEY for Manage node and clouds) (NOT USED)
+cat ~/.ssh/id_rsa       (PRIVATE KEY -> Manage credentials)
+/3. ===================== JENKINS CONFIG (NORMAL VPS)
+
+
+3. ===================== JENKINS CONFIG (FOR VPS AWS LIGHSAILS)
+dashboard -> manage credentials ->  Add Credentials
+
+download .pem (sshkey) file from lightsail
+
+open .pem using notepad/notepad++ 
+
+copy :
+-----BEGIN RSA PRIVATE KEY-----
+...
+...
+-----END RSA PRIVATE KEY-----
+
+
+
+dashboard -> manage jenkins -> manage credential
+
+P	            Store       Domains
+jenkins logo    Jenkins	    (global)
+
+
+choose global  -> add credentials -> 
+Kind : SSH username with private key
+Scrope : global(jenkins, nodes, items, all child item, etc)
+ID : ubuntu_syncallforstok
+Description : ubuntu_syncallforstok Desc
+Username : ubuntu
+Private Key : 
+(paste)
+-----BEGIN RSA PRIVATE KEY-----
+...
+...
+-----END RSA PRIVATE KEY-----
+
+-> create
+
+
+/3. ===================== JENKINS CONFIG
+
+4. ===================== NORMAL VPS
+MAKESURE PORT 8080 IS OPEN (FOR REMOTE JENKINS AGENT)
+/4. ===================== NORMAL VPS
+
+4. ===================== VPS AWS LIGHSAILS
+MAKESURE OPEN PORT 8080 LIGHTSAIL FROM DASHBOARD NETWORK (FOR REMOTE JENKINS AGENT)
+/4. ===================== VPS AWS LIGHSAILS 
+
+
+5. ===================== JENKINS CONFIG
+
+Dashboard -> Manage Jenkins -> Manage node and clouds -> New Node ->  Node name : AGENTSYNCALLFORSTOK
+
+Name : agent_ubuntu_syncallforstok
+Description : agent_ubuntu_syncallforstok_desc
+Number of executors : 1
+Remote root directory : /home/ubuntu/.jenkins_ubuntu_syncallforstok
+Labels : agent_ubuntu_syncallforstok
+Usage : Use this node as much as possible
+Launch method : Launch agents via SSH
+Host : <your target vm deploy public ip address>
+Credentials : ubuntu (ubuntu_syncallforstok Desc)
+Host Key Verification Strategy : Non verifying Verification Strategy 
+
+--> save
+
+/5. ===================== JENKINS CONFIG
+
+
+6. ===================== JENKINS CONFIG (CREATE JOB PIPELINE)
+
+Dashboard -> New Item -> Jenkins Pipeline : Belajar Build Pipeline
+
+
+General
+Description : Belajar Build Pipeline
+Poll SCM : *****
+Pipeline : Pipeline script from SCM
+SCM : Git 
+repositories , Repository URL : git@github.com:EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline.git
+Credentials : EKI-INDRADI (GITHUB EKI)  <tutorial from EKI.CONFIG.txt>
+branches to build : master
+
+
+Git Execute :
+default or git_ubuntu_aws_lightsails (recomended see step 7)
+
+
+Script Path :
+Jenkinsfile
+
+Lightweight checkout
+
+
+--> Save 
+
+
+
+Dashboard -> Belajar Build Pipeline -> Build Now
+
+
+/6. ===================== JENKINS CONFIG (CREATE JOB PIPELINE)
+
+
+7. ===================== JENKINS CONFIG (IF ERROR SCM)
+
+
+------------- ERROR
+Started by user CRYPT
+Obtained Jenkinsfile from git git@github.com:EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on agent_ubuntu_syncallforstok in /home/ubuntu/.jenkins_ubuntu_syncallforstok/workspace/Belajar Build Pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+------------- /ERROR
+
+-------------SOLUTION
+https://stackoverflow.com/questions/8639501/jenkins-could-not-run-git
+
+
+---- check /usr/local/bin/git
+ls /usr/local/bin/git
+
+---- check /usr/bin/git
+ls /usr/bin/git
+
+
+dashboard -> Manage jenkins -> Global Tool Configuration -> 
+
+Git (ADD NEW DONT REPLACE DEFAULT)
+name : git_ubuntu_aws_lightsails
+path git : /usr/bin/git
+
+
+
+dont forget change 
+
+Dashboard -> Belajar Build Pipeline 
+Git Execute : git_ubuntu_aws_lightsails
+
+
+-------------/SOLUTION
+
+TEST DEPLOY 
+
+dashboard -> Pipeline Belajar Build Pipeline -> Build Now 
+dashboard -> Pipeline Belajar Build Pipeline -> check build history -> #<build-number> -> console output
+
+console : 
+
+Started by user CRYPT
+Obtained Jenkinsfile from git git@github.com:EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on agent_ubuntu_syncallforstok in /home/ubuntu/.jenkins_ubuntu_syncallforstok/workspace/Belajar Build Pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential EKI-TESTING-GITHUB
+Cloning the remote Git repository
+Cloning repository git@github.com:EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline.git
+ > git init /home/ubuntu/.jenkins_ubuntu_syncallforstok/workspace/Belajar Build Pipeline # timeout=10
+Fetching upstream changes from git@github.com:EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.25.1'
+using GIT_SSH to set credentials GITHUB EKI
+ > git fetch --tags --force --progress -- git@github.com:EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+Checking out Revision f7645b9fb229e47cd853bf9779ba3476596ab97e (origin/master)
+ > git config remote.origin.url git@github.com:EKI-INDRADI/eki-latihan-deploy-jenkins-pipeline.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse origin/master^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f f7645b9fb229e47cd853bf9779ba3476596ab97e # timeout=10
+Commit message: "test"
+ > git rev-list --no-walk f7645b9fb229e47cd853bf9779ba3476596ab97e # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build WHOAMI)
+[Pipeline] echo
+whoami . . . Date : 27/06/2022
+[Pipeline] sh
++ whoami
+ubuntu
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build PWD)
+[Pipeline] echo
+pwd . . . Date : 27/06/2022
+[Pipeline] sh
++ pwd
+/home/ubuntu/.jenkins_ubuntu_syncallforstok/workspace/Belajar Build Pipeline
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+
+/7. ===================== JENKINS CONFIG (IF ERROR SCM)

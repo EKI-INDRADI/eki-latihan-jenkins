@@ -842,20 +842,22 @@ SSH Build Agent
 - salah satu yang aman adalah menggunakan ssh , namun secara default pluginnya tidak terinstall
 - install pl;ugin SSH Build Agent
 
-Dashboard -> Manage jenkins -> manage plugin -> available -> Role-Based Authorization Strategy -> SSH Build Agents -> install download restart
+Dashboard -> Manage jenkins -> manage plugin -> available -> SSH Build Agents -> install download restart
 
 
 Dashboard -> Manage Jenkins -> Manage node and clouds -> New Node ->  Node name : Jenkins Agent 1 , type Permanent Agent ->
 
 Number of executors : 2
-remote root directory : /home/jenkins-agent1
+remote root directory : /home/crypt/.jenkins-agent1
 label : ekitesting-agent-1
 usage : Use this node as much as possible (agar ga pilih2 job yg mana, INI AKAN SEMUA JOB DI DEPLOY DI VM , mending pilih yg 1 nya)
 Launch Method : Launch agent via SSH
-Host : 192.168.100.56   (jika penggunakan docker ga bs akses ke local ip address, di sarankan ip public)
+Host : 192.168.100.56 (jika penggunakan docker ga bs akses ke local ip address, di sarankan ip public)  (HARUS IP PUBLIC)  
 
 Credentials :  none -> Add -> Kind : SSH username with password, Scope : Global (jenkins,nodes,item,..etc) , 
-Username : crypt, password : masuk123 , ID : jenkins-agent1, Description : Jenkins Agent 1
+Username : crypt, password : masuk123 , 
+ID : jenkins-agent1, 
+Description : Jenkins Agent 1
 
 crypt/****** (Jenkins Agent 1)
 
