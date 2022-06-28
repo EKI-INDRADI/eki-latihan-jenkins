@@ -137,13 +137,21 @@ Description : agent_ubuntu_syncallforstok_desc
 Number of executors : 1
 Remote root directory : /home/ubuntu/.jenkins_ubuntu_syncallforstok
 Labels : agent_ubuntu_syncallforstok
-Usage : Use this node as much as possible
+
+Usage : Use this node as much as possible (ALL)  ,   Only build jobs with label expression matching this node (RECOMENDED, FOR SPESIFIC LABEL)
+
 Launch method : Launch agents via SSH
 Host : <your target vm deploy public ip address>
 Credentials : ubuntu (ubuntu_syncallforstok Desc)
 Host Key Verification Strategy : Non verifying Verification Strategy 
 
+
+Node Properties , Tool Locations , GIT : /usr/bin/git
 --> save
+
+
+
+
 
 /5. ===================== JENKINS CONFIG
 
@@ -172,6 +180,66 @@ Jenkinsfile
 
 Lightweight checkout
 
+----------------- SPECIFIC DEPLOY (Only build jobs with label expression matching this node)
+Restrict where this job can be run : agent_ubuntu_syncallforstok  ( KALO GA ADA SET DI JENKINSFILE)
+
+
+pipeline {
+    agent {label 'slave'}
+    stages {
+        ...
+    }
+}
+
+
+ EXAMPLE :
+      
+def configDate ="27/06/2022"
+def jenkinsAgentLabel = "agent_ubuntu_syncallforstok"  //from  Manage node and clouds (Labels : agent_ubuntu_syncallforstok)
+
+pipeline {
+    agent {label jenkinsAgentLabel}
+    stages {
+
+        stage("Check Variable Stage") {
+            steps {
+              echo "configDate : ${configDate}"
+              echo "jenkinsAgentLabel : ${jenkinsAgentLabel}"
+            }
+        }
+
+        stage("WHOAMI Stage") {
+            steps {
+              echo "EXECUTE WHOAMI : "
+              sh """
+              whoami
+              """
+            }
+        }
+      
+        stage("PWD Stage") {
+            steps {
+              echo "EXECUTE PWD : "
+              sh """
+              pwd
+              """
+            }
+        }
+
+    }
+}
+
+
+REFERENCE :
+
+https://stackoverflow.com/questions/44186116/jenkins-how-to-reserve-an-executor-for-a-specific-jobs (FREESTYLE)
+https://i.stack.imgur.com/nhTsj.png (FREESTYLE)
+
+https://www.jenkins.io/doc/book/pipeline/syntax/  (PIPELINE SET AGENT SOLVED)
+https://serverfault.com/questions/359793/tell-jenkins-to-run-a-specific-project-on-a-particular-slave-node (PIPELINE SET AGENT SOLVED)
+
+
+----------------- /SPECIFIC DEPLOY (Only build jobs with label expression matching this node)
 
 --> Save 
 
